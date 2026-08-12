@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouteLogic Velocity — Product Roadmap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --card-bg: #334155;
+            --card-hover: #475569;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+            
+            --brand-primary: #38bdf8;
+            --brand-accent: #818cf8;
+            
+            --quad-quick-win: #22c55e;
+            --quad-major-project: #3b82f6;
+            --quad-fill-in: #eab308;
+            --quad-time-sinker: #ef4444;
+            
+            --badge-qw-bg: rgba(34, 197, 94, 0.15);
+            --badge-mp-bg: rgba(59, 130, 246, 0.15);
+            --badge-fi-bg: rgba(234, 179, 8, 0.15);
+            --badge-ts-bg: rgba(239, 68, 68, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand-title h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: var(--text-main);
+        }
+
+        .brand-title h1 span {
+            color: var(--brand-primary);
+        }
+
+        .brand-title p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .team-badge {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .team-badge strong {
+            color: var(--brand-accent);
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .lane {
+            background-color: var(--panel-bg);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .lane-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .lane-now .lane-header { border-color: var(--brand-primary); }
+        .lane-next .lane-header { border-color: var(--brand-accent); }
+        .lane-later .lane-header { border-color: var(--text-muted); }
+
+        .lane-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lane-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            display: block;
+        }
+
+        .card-count {
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            background-color: var(--card-hover);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-id {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+            text-transform: uppercase;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-rationale {
+            font-size: 0.825rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.75rem;
+        }
+
+        .badge-quick-win {
+            background-color: var(--badge-qw-bg);
+            color: var(--quad-quick-win);
+            border: 1px solid var(--quad-quick-win);
+        }
+
+        .badge-major-project {
+            background-color: var(--badge-mp-bg);
+            color: var(--quad-major-project);
+            border: 1px solid var(--quad-major-project);
+        }
+
+        .badge-fill-in {
+            background-color: var(--badge-fi-bg);
+            color: var(--quad-fill-in);
+            border: 1px solid var(--quad-fill-in);
+        }
+
+        .badge-time-sinker {
+            background-color: var(--badge-ts-bg);
+            color: var(--quad-time-sinker);
+            border: 1px solid var(--quad-time-sinker);
+        }
+
+        .cut-section {
+            background-color: var(--panel-bg);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .cut-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cut-title {
+            color: var(--quad-time-sinker);
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cut-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .card-cut {
+            opacity: 0.85;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .card-cut:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            header { flex-direction: column; align-items: flex-start; }
+            .board { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-title">
+            <h1>RouteLogic <span>Velocity</span> Roadmap</h1>
+            <p>Interactive Strategic Prioritization & Roadmap View</p>
+        </div>
+        <div class="team-badge">
+            Team Capacity: <strong>2 Engineers</strong> • <strong>1 Designer</strong> • <strong>1 CS Lead</strong>
+        </div>
+    </header>
+
+    <main>
+        <div class="board">
+            
+            <!-- NOW LANE -->
+            <section class="lane lane-now">
+                <div class="lane-header">
+                    <div>
+                        <div class="lane-title">NOW</div>
+                        <span class="lane-subtitle">Pilot (4 weeks, 3 accounts)</span>
+                    </div>
+                    <span class="card-count">2</span>
+                </div>
+                <div class="cards-container">
+                    
+                    <article class="card">
+                        <div class="card-header">
+                            <span class="card-id">B1</span>
+                        </div>
+                        <h2 class="card-title">One-Click Compliance Checklist</h2>
+                        <p class="card-rationale">Directly attacks our primary Moment of Misery by rescuing ~14.6 minutes per shift without violating our zero-error compliance guardrail, making it our highest-ROI anchor for the 4-week pilot.</p>
+                        <span class="badge badge-quick-win">Quick Win</span>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-header">
+                            <span class="card-id">B3</span>
+                        </div>
+                        <h2 class="card-title">Shift Handoff Wizard</h2>
+                        <p class="card-rationale">Solves a major coordinator friction point by systematically capturing shift handoff data, delivering a proven ~6.8-minute daily time savings via low complexity UI flows.</p>
+                        <span class="badge badge-quick-win">Quick Win</span>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- NEXT LANE -->
+            <section class="lane lane-next">
+                <div class="lane-header">
+                    <div>
+                        <div class="lane-title">NEXT</div>
+                        <span class="lane-subtitle">GA Release (weeks 5-8)</span>
+                    </div>
+                    <span class="card-count">1</span>
+                </div>
+                <div class="cards-container">
+                    
+                    <article class="card">
+                        <div class="card-header">
+                            <span class="card-id">B2</span>
+                        </div>
+                        <h2 class="card-title">Smart Daily Report Auto-Fill</h2>
+                        <p class="card-rationale">Highly valuable operational time-saver for coordinators, but the complex AI parsing and edge case handling risks overcommitting our 2-engineer capacity during a tight 4 week pilot.</p>
+                        <span class="badge badge-major-project">Major Project</span>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- LATER LANE -->
+            <section class="lane lane-later">
+                <div class="lane-header">
+                    <div>
+                        <div class="lane-title">LATER</div>
+                        <span class="lane-subtitle">Backlog</span>
+                    </div>
+                    <span class="card-count">2</span>
+                </div>
+                <div class="cards-container">
+                    
+                    <article class="card">
+                        <div class="card-header">
+                            <span class="card-id">B5</span>
+                        </div>
+                        <h2 class="card-title">Step Progress Indicator</h2>
+                        <p class="card-rationale">Extremely fast UI add, but provides passive process visibility rather than actively removing friction or cycle time for experienced coordinators.</p>
+                        <span class="badge badge-fill-in">Fill-In</span>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-header">
+                            <span class="card-id">B7</span>
+                        </div>
+                        <h2 class="card-title">Contextual AI ETA Display</h2>
+                        <p class="card-rationale">Low implementation effort, but inline UI placement won't drive shift velocity while base trust/adoption remains at 11% without fixing underlying model accuracy first.</p>
+                        <span class="badge badge-fill-in">Fill-In</span>
+                    </article>
+
+                </div>
+            </section>
+
+        </div>
+
+        <!-- CUT LIST SECTION -->
+        <section class="cut-section">
+            <div class="cut-header">
+                <div class="cut-title">
+                    <span>✂</span> Cut List
+                </div>
+                <span class="card-count">5</span>
+            </div>
+            <div class="cut-grid">
+                
+                <article class="card card-cut">
+                    <div class="card-header">
+                        <span class="card-id">B4</span>
+                    </div>
+                    <h2 class="card-title">Mobile-First Coordinator Dashboard</h2>
+                    <p class="card-rationale">Misaligned with our primary coordinator desktop workflow, incurring heavy layout refactoring costs for minimal operational value during a 4 week pilot.</p>
+                    <span class="badge badge-time-sinker">Time Sinker</span>
+                </article>
+
+                <article class="card card-cut">
+                    <div class="card-header">
+                        <span class="card-id">B6</span>
+                    </div>
+                    <h2 class="card-title">Driver Alert Notifications</h2>
+                    <p class="card-rationale">Serves the Driver persona rather than our primary Dispatch Coordinator, introducing mobile push infrastructure complexity that threatens our 4 week pilot timeline.</p>
+                    <span class="badge badge-major-project">Major Project</span>
+                </article>
+
+                <article class="card card-cut">
+                    <div class="card-header">
+                        <span class="card-id">B8</span>
+                    </div>
+                    <h2 class="card-title">Fleet Analytics Manager View</h2>
+                    <p class="card-rationale">Serves executive/sales preferences with high aggregation complexity while delivering zero reduction in daily shift cycle time for our primary Dispatch Coordinator persona.</p>
+                    <span class="badge badge-time-sinker">Time Sinker</span>
+                </article>
+
+                <article class="card card-cut">
+                    <div class="card-header">
+                        <span class="card-id">B9</span>
+                    </div>
+                    <h2 class="card-title">Compliance Audit Trail Export</h2>
+                    <p class="card-rationale">Irrelevant for experienced power users across our 3 pilot accounts; onboarding during a 4-week pilot is far better handled directly by our dedicated CS Lead.</p>
+                    <span class="badge badge-quick-win">Quick Win</span>
+                </article>
+
+                <article class="card card-cut">
+                    <div class="card-header">
+                        <span class="card-id">B10</span>
+                    </div>
+                    <h2 class="card-title">In-App Coordinator Training</h2>
+                    <p class="card-rationale">Adds non essential software engineering bloat during a 4 week pilot; onboarding active power users across our 3 pilot accounts is far more effectively executed directly by our CS Lead.</p>
+                    <span class="badge badge-time-sinker">Time Sinker</span>
+                </article>
+
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

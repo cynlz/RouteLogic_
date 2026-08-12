@@ -1,23 +1,42 @@
-# Roadmap, PRD & Prototype
+# Feature Roadmap, Module 4 · RouteLogic Velocity
 
-> **Module 4 · ★ Deliverable 4.** Repo file `04-roadmap/roadmap-prd-prototype.md` — part of your submission.
-> Do the lab in the **Module 4 · Exercise 1 Guide** (linked from the Module 4 deck), then click **⬇ Download .md** — it saves as this exact file. Commit it here.
-> It becomes the **Roadmap, PRD & Prototype** slide of your Module 6 final deck. (Your Module 4 · Exercise 2 PRD sprint lands in `prd-and-prototype.md`.)
+**Team:** 2 engineers + 1 designer + 1 CS lead
 
-## High-level product roadmap
+## Strategic anchors
+- **Persona:** Dispatch Coordinator (Desktop-based power user managing active routes, compliance, and handoffs)
+- **Primary metric:** Active Cycle Time Reduction per Shift (Target: Save ≥20 mins/shift/coordinator)
+- **Moment of misery:** High manual friction and repetitive data entry during compliance checks (14.6 min/step) and shift handoffs
+- **Guardrail:** 0% increase in regulatory/compliance logging error rate
 
-_Future direction, key milestones, and phased execution over time._
+## Scoring
+| Feature | Value | Effort | Quadrant | Decision | Rationale |
+|---|---|---|---|---|---|
+| B1 One-Click Compliance Checklist | 5 | 2 | Quick Win | Now | Directly attacks our primary Moment of Misery by rescuing ∼14.6 minutes per shift without violating our zero-error compliance guardrail, making it our highest-ROI anchor for the 4-week pilot |
+| B2 Smart Daily Report Auto-Fill | 4 | 4 | Major Project | Next | Highly valuable operational time-saver for coordinators, but the complex AI parsing and edge case handling risks overcommitting our 2-engineer capacity during a tight 4 week pilot. |
+| B3 Shift Handoff Wizard | 4 | 2 | Quick Win | Now | Solves a major coordinator friction point by systematically capturing shift handoff data, delivering a proven ∼6.8-minute daily time savings via low complexity UI flows. |
+| B4 Mobile-First Coordinator Dashboard | 2 | 4 | Time Sinker | Cut | Misaligned with our primary coordinator desktop workflow, incurring heavy layout refactoring costs for minimal operational value during a 4 week pilot. |
+| B5 Step Progress Indicator | 2 | 1 | Fill-In | Later | Extremely fast UI add, but provides passive process visibility rather than actively removing friction or cycle time for experienced coordinators. |
+| B6 Driver Alert Notifications | 3 | 3 | Time Sinker | Cut | Serves the Driver persona rather than our primary Dispatch Coordinator, introducing mobile push infrastructure complexity that threatens our 4 week pilot timeline. |
+| B7 Contextual AI ETA Display | 2 | 2 | Fill-In | Later | Low implementation effort, but inline UI placement won't drive shift velocity while base trust/adoption remains at 11% without fixing underlying model accuracy first. |
+| B8 Fleet Analytics Manager View | 1 | 5 | Time Sinker | Cut | Serves executive/sales preferences with high aggregation complexity while delivering zero reduction in daily shift cycle time for our primary Dispatch Coordinator persona. |
+| B9 Compliance Audit Trail Export | 1 | 3 | Time Sinker | Cut | Irrelevant for experienced power users across our 3 pilot accounts; onboarding during a 4-week pilot is far better handled directly by our dedicated CS Lead. |
+| B10 In-App Coordinator Training | 1 | 3 | Time Sinker | Cut | Adds non essential software engineering bloat during a 4 week pilot; onboarding active power users across our 3 pilot accounts is far more effectively executed directly by our CS Lead. |
 
-_____
+## Roadmap
+### NOW, Pilot (4 weeks, 3 accounts)
+- **B1 One-Click Compliance Checklist**, Directly attacks our primary Moment of Misery by rescuing ∼14.6 minutes per shift without violating our zero-error compliance guardrail, making it our highest-ROI anchor for the 4-week pilot
+- **B3 Shift Handoff Wizard**, Solves a major coordinator friction point by systematically capturing shift handoff data, delivering a proven ∼6.8-minute daily time savings via low complexity UI flows.
 
-## PRD snippets
+### NEXT, GA Release (weeks 5-8)
+- **B2 Smart Daily Report Auto-Fill**, Highly valuable operational time-saver for coordinators, but the complex AI parsing and edge case handling risks overcommitting our 2-engineer capacity during a tight 4 week pilot.
 
-_The key elements of your simplified PRD._
+### LATER, backlog
+- **B5 Step Progress Indicator**, Extremely fast UI add, but provides passive process visibility rather than actively removing friction or cycle time for experienced coordinators.
+- **B7 Contextual AI ETA Display**, Low implementation effort, but inline UI placement won't drive shift velocity while base trust/adoption remains at 11% without fixing underlying model accuracy first.
 
-_____
-
-## Wireframes / prototype
-
-_A visual or interactive model of your proposed solution._
-
-_[screenshot or link to your prototype]_
+### ✂ Cut List
+- **B4 Mobile-First Coordinator Dashboard**, Misaligned with our primary coordinator desktop workflow, incurring heavy layout refactoring costs for minimal operational value during a 4 week pilot.
+- **B6 Driver Alert Notifications**, Serves the Driver persona rather than our primary Dispatch Coordinator, introducing mobile push infrastructure complexity that threatens our 4 week pilot timeline.
+- **B8 Fleet Analytics Manager View**, Serves executive/sales preferences with high aggregation complexity while delivering zero reduction in daily shift cycle time for our primary Dispatch Coordinator persona.
+- **B9 Compliance Audit Trail Export**, Irrelevant for experienced power users across our 3 pilot accounts; onboarding during a 4-week pilot is far better handled directly by our dedicated CS Lead.
+- **B10 In-App Coordinator Training**, Adds non essential software engineering bloat during a 4 week pilot; onboarding active power users across our 3 pilot accounts is far more effectively executed directly by our CS Lead.

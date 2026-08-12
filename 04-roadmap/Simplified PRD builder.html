@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RouteLogic Velocity - One-Click Compliance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .animate-pulse-subtle { animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .animate-shake { animation: shake 0.4s ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- TOP HEADER -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="bg-blue-600 text-white p-1.5 rounded-lg font-black tracking-wider text-xs">RL</div>
+      <span class="font-bold tracking-tight text-slate-100 text-lg">RouteLogic <span class="text-blue-500 text-xs font-mono uppercase tracking-widest ml-1 px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">Velocity</span></span>
+    </div>
+    
+    <div class="flex items-center gap-6 text-sm">
+      <div class="flex items-center gap-2 text-slate-400">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-mono text-xs text-slate-300">DISPATCH_SESSION: #4082</span>
+      </div>
+      <div class="h-4 w-px bg-slate-800"></div>
+      <div class="text-slate-400 text-xs font-mono">Coordinator ID: <span class="text-slate-200 font-semibold">DC-9042</span></div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 flex flex-col gap-6">
+
+    <!-- DEMO CONTROLLER TOOLBAR -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-lg">
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 font-mono">Prototype State Controls:</span>
+        <div class="flex gap-2">
+          <button onclick="setState('complete')" id="btn-state-complete" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white transition-all">
+            State 1: 100% Pre-Filled
+          </button>
+          <button onclick="setState('partial')" id="btn-state-partial" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all">
+            State 2: Missing Delta Field
+          </button>
+        </div>
+      </div>
+      <div class="text-xs text-slate-500 font-mono">
+        Hotkeys enabled: <kbd class="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-300">Tab</kbd> to cycle inputs | <kbd class="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-300">Cmd/Ctrl + Enter</kbd> to submit
+      </div>
+    </div>
+
+    <!-- SCREEN 1: ENTRY POINT (DISPATCH DASHBOARD) -->
+    <section id="screen-entry" class="flex flex-col gap-6 transition-all duration-300">
+      
+      <!-- COMPLIANCE ALERT BANNER -->
+      <div class="bg-gradient-to-r from-blue-950/80 via-slate-900 to-slate-900 border border-blue-500/30 rounded-2xl p-6 flex items-center justify-between shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="flex items-start gap-4 z-10">
+          <div class="p-3 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl flex-shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                Action Required
+              </span>
+              <span class="text-xs text-slate-400 font-mono">Shift #4082 • Vehicle #V-902</span>
+            </div>
+            <h2 class="text-xl font-bold text-slate-100 mt-1">Shift Compliance Review Ready</h2>
+            <p class="text-slate-400 text-sm mt-0.5">Pre-filled dispatch telemetry available. Review logs and complete sign-off.</p>
+          </div>
+        </div>
+
+        <button onclick="openModal()" class="z-10 group relative inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-blue-600/20 hover:shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+          <span>Review & Sign Off</span>
+          <span class="text-xs font-normal bg-blue-700 group-hover:bg-blue-600 px-2 py-0.5 rounded-md text-blue-100 border border-blue-400/20 font-mono">14m saved</span>
+          <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </button>
+      </div>
+
+      <!-- FLEET STATUS GRID (CONTEXT) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <div class="text-xs text-slate-400 font-medium">Active Driver</div>
+          <div class="text-base font-bold text-slate-100 mt-1">Marcus Vance (ID: DRV-8821)</div>
+          <div class="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Pre-Trip Log Cleared at 06:45 AM
+          </div>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <div class="text-xs text-slate-400 font-medium">Assigned Route</div>
+          <div class="text-base font-bold text-slate-100 mt-1">Route #LOG-8802 (Express B2B)</div>
+          <div class="text-xs text-slate-500 mt-2">Estimated Cycle: 7.5 Hours</div>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <div class="text-xs text-slate-400 font-medium">Shift Status</div>
+          <div class="text-base font-bold text-amber-400 mt-1">Pending Compliance Lock</div>
+          <div class="text-xs text-slate-500 mt-2">Target Verification Time: &lt; 60s</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: FEATURE CORE (PRE-FILLED COMPLIANCE MODAL) -->
+    <div id="compliance-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-opacity">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full shadow-2xl flex flex-col overflow-hidden relative transform transition-transform scale-95 opacity-0 duration-200" id="modal-container">
+        
+        <!-- MODAL HEADER -->
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-lg text-slate-100">Shift #4082 Compliance Checklist</h3>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">AUTO-FILLED (80%+)</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">Review verified telemetry fields and sign off below.</p>
+          </div>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-800 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+
+        <!-- FORM CONTENT AREA -->
+        <div class="p-6 overflow-y-auto max-h-[70vh] flex flex-col gap-4">
+
+          <!-- FIELD 1: DRIVER ID (VERIFIED) -->
+          <div class="p-3.5 bg-slate-950/50 border border-slate-800 rounded-xl flex items-center justify-between">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Driver ID & Credentials</label>
+              <div class="text-sm font-semibold text-slate-200 mt-1">Marcus Vance (DRV-8821)</div>
+            </div>
+            <span class="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Verified
+            </span>
+          </div>
+
+          <!-- FIELD 2: VEHICLE REGISTRATION (VERIFIED) -->
+          <div class="p-3.5 bg-slate-950/50 border border-slate-800 rounded-xl flex items-center justify-between">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Vehicle Registration & VIN</label>
+              <div class="text-sm font-semibold text-slate-200 mt-1">V-902 • Freightliner Cascadia (VIN: ...8921)</div>
+            </div>
+            <span class="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Verified
+            </span>
+          </div>
+
+          <!-- FIELD 3: PRE-TRIP LOG (VERIFIED) -->
+          <div class="p-3.5 bg-slate-950/50 border border-slate-800 rounded-xl flex items-center justify-between">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">Pre-Trip Inspection Log</label>
+              <div class="text-sm font-semibold text-slate-200 mt-1">Cleared • Driver Signed @ 06:45 AM</div>
+            </div>
+            <span class="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Verified
+            </span>
+          </div>
+
+          <!-- FIELD 4: ODOMETER READING (DELTA HIGHLIGHTED FIELD) -->
+          <div id="odometer-container" class="p-4 bg-slate-950/50 border border-slate-800 rounded-xl transition-all">
+            <div class="flex items-center justify-between mb-2">
+              <label id="odometer-label" for="odometer-input" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">
+                Current Odometer Reading (Miles)
+              </label>
+              <span id="odometer-badge" class="hidden flex items-center gap-1 text-[11px] text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                ⚠️ Required Verification
+              </span>
+            </div>
+            <div class="relative">
+              <input type="text" id="odometer-input" value="142,890" oninput="handleOdometerChange()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-slate-100 font-mono text-sm focus:outline-none focus:border-blue-500 transition-colors" placeholder="e.g. 142890">
+              <div id="odometer-check" class="absolute right-3 top-2.5 text-emerald-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+              </div>
+            </div>
+            <p id="odometer-error" class="hidden text-xs text-amber-400 mt-1.5 font-medium">This field must be completed before submission.</p>
+          </div>
+
+        </div>
+
+        <!-- MODAL FOOTER / PRIMARY ACTION -->
+        <div class="p-5 border-t border-slate-800 bg-slate-900/80 flex items-center justify-between gap-4">
+          <div class="text-xs text-slate-400">
+            Target processing: <span class="text-slate-200 font-mono font-semibold">&lt; 1.5s</span>
+          </div>
+          <button id="btn-submit" onclick="submitChecklist()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center gap-2">
+            <span>Verify & Submit Checklist</span>
+            <span class="text-[10px] font-mono bg-blue-700 px-1.5 py-0.5 rounded text-blue-200 border border-blue-400/20">Cmd + Enter</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SCREEN 3: SUCCESS / CONFIRMATION (IMMUTABLE AUDIT SIGN-OFF) -->
+    <section id="screen-success" class="hidden flex flex-col gap-6 transition-all duration-300">
+      <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-8 flex flex-col items-center text-center shadow-2xl relative overflow-hidden">
+        <div class="absolute inset-0 bg-emerald-500/5 pointer-events-none"></div>
+
+        <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/10">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+
+        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">
+          COMPLIANCE LOCKED & SUBMITTED
+        </span>
+        <h2 class="text-2xl font-bold text-slate-100">Shift #4082 Log Finalized</h2>
+        <p class="text-slate-400 text-sm max-w-md mt-1">Shift compliance is fully validated, locked, and written to the immutable audit ledger.</p>
+
+        <!-- TIME SAVED TOAST -->
+        <div class="my-6 inline-flex items-center gap-2 bg-slate-950 border border-slate-800 px-4 py-2 rounded-xl text-xs text-slate-300 font-mono shadow-inner">
+          <span class="text-amber-400 text-sm">⚡</span>
+          <span>Completed in <strong id="time-taken-display" class="text-emerald-400">28 seconds</strong> — 14.1 minutes saved this shift.</span>
+        </div>
+
+        <!-- AUDIT METADATA CARD -->
+        <div class="w-full max-w-lg bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 text-left font-mono text-xs text-slate-400 space-y-2 mb-6">
+          <div class="flex justify-between border-b border-slate-800/60 pb-1.5">
+            <span>Timestamp (ISO-8601):</span>
+            <span id="audit-timestamp" class="text-slate-200">2026-08-12T13:58:07Z</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-800/60 pb-1.5">
+            <span>Coordinator ID:</span>
+            <span class="text-slate-200">DC-9042</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Immutable Ledger Hash (SHA-256):</span>
+            <span class="text-blue-400 font-bold">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
+          </div>
+        </div>
+
+        <button onclick="resetPrototype()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold px-6 py-2.5 rounded-xl transition-all text-sm">
+          Return to Active Fleet Map
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PROTOTYPE LOGIC -->
+  <script>
+    let currentState = 'complete'; // 'complete' or 'partial'
+    let startTime = null;
+
+    function setState(state) {
+      currentState = state;
+      const btnComplete = document.getElementById('btn-state-complete');
+      const btnPartial = document.getElementById('btn-state-partial');
+      const odoContainer = document.getElementById('odometer-container');
+      const odoInput = document.getElementById('odometer-input');
+      const odoCheck = document.getElementById('odometer-check');
+      const odoBadge = document.getElementById('odometer-badge');
+      const odoError = document.getElementById('odometer-error');
+      const btnSubmit = document.getElementById('btn-submit');
+
+      if (state === 'complete') {
+        btnComplete.className = "px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white transition-all";
+        btnPartial.className = "px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all";
+        
+        odoInput.value = "142,890";
+        odoContainer.className = "p-4 bg-slate-950/50 border border-slate-800 rounded-xl transition-all";
+        odoCheck.classList.remove('hidden');
+        odoBadge.classList.add('hidden');
+        odoError.classList.add('hidden');
+        
+        btnSubmit.disabled = false;
+        btnSubmit.className = "bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center gap-2 cursor-pointer";
+      } else {
+        btnPartial.className = "px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white transition-all";
+        btnComplete.className = "px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all";
+        
+        odoInput.value = "";
+        odoContainer.className = "p-4 bg-slate-950/50 border-2 border-amber-500/80 rounded-xl transition-all shadow-lg shadow-amber-500/5";
+        odoCheck.classList.add('hidden');
+        odoBadge.classList.remove('hidden');
+        odoError.classList.remove('hidden');
+        
+        btnSubmit.disabled = true;
+        btnSubmit.className = "bg-slate-800 text-slate-500 font-semibold px-6 py-2.5 rounded-xl border border-slate-700/50 transition-all flex items-center gap-2 cursor-not-allowed";
+      }
+    }
+
+    function handleOdometerChange() {
+      const val = document.getElementById('odometer-input').value.trim();
+      const odoContainer = document.getElementById('odometer-container');
+      const odoCheck = document.getElementById('odometer-check');
+      const odoBadge = document.getElementById('odometer-badge');
+      const odoError = document.getElementById('odometer-error');
+      const btnSubmit = document.getElementById('btn-submit');
+
+      if (val.length > 0) {
+        odoContainer.className = "p-4 bg-slate-950/50 border border-slate-800 rounded-xl transition-all";
+        odoCheck.classList.remove('hidden');
+        odoBadge.classList.add('hidden');
+        odoError.classList.add('hidden');
+        
+        btnSubmit.disabled = false;
+        btnSubmit.className = "bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center gap-2 cursor-pointer";
+      } else {
+        odoContainer.className = "p-4 bg-slate-950/50 border-2 border-amber-500/80 rounded-xl transition-all shadow-lg shadow-amber-500/5";
+        odoCheck.classList.add('hidden');
+        odoBadge.classList.remove('hidden');
+        odoError.classList.remove('hidden');
+        
+        btnSubmit.disabled = true;
+        btnSubmit.className = "bg-slate-800 text-slate-500 font-semibold px-6 py-2.5 rounded-xl border border-slate-700/50 transition-all flex items-center gap-2 cursor-not-allowed";
+      }
+    }
+
+    function openModal() {
+      startTime = new Date();
+      const modal = document.getElementById('compliance-modal');
+      const container = document.getElementById('modal-container');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        container.classList.remove('scale-95', 'opacity-0');
+        container.classList.add('scale-100', 'opacity-100');
+        if (currentState === 'partial') {
+          document.getElementById('odometer-input').focus();
+        }
+      }, 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('compliance-modal');
+      const container = document.getElementById('modal-container');
+      container.classList.remove('scale-100', 'opacity-100');
+      container.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function submitChecklist() {
+      const val = document.getElementById('odometer-input').value.trim();
+      const container = document.getElementById('modal-container');
+
+      if (!val) {
+        // Trigger shake animation for validation guardrail
+        container.classList.add('animate-shake');
+        setTimeout(() => container.classList.remove('animate-shake'), 400);
+        return;
+      }
+
+      // Calculate time taken
+      const endTime = new Date();
+      const secondsTaken = Math.max(1, Math.round((endTime - startTime) / 1000));
+      document.getElementById('time-taken-display').innerText = `${secondsTaken} seconds`;
+      document.getElementById('audit-timestamp').innerText = new Date().toISOString();
+
+      closeModal();
+      setTimeout(() => {
+        document.getElementById('screen-entry').classList.add('hidden');
+        document.getElementById('screen-success').classList.remove('hidden');
+      }, 250);
+    }
+
+    function resetPrototype() {
+      document.getElementById('screen-success').classList.add('hidden');
+      document.getElementById('screen-entry').classList.remove('hidden');
+      setState('complete');
+    }
+
+    // Keyboard Shortcuts (Cmd/Ctrl + Enter)
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        const modal = document.getElementById('compliance-modal');
+        if (!modal.classList.contains('hidden')) {
+          e.preventDefault();
+          submitChecklist();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
