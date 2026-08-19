@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RouteLogic Velocity - Product Management Final Presentation</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lato:wght@400;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* RESET & BASE STYLES */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+      font-size: 16px;
+      background-color: #07162C;
+      color: #ffffff;
+      font-family: 'Lato', sans-serif;
+    }
+
+    body {
+      background-color: #07162C;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Poppins', sans-serif;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+
+    p, li, .font-body {
+      font-family: 'Lato', sans-serif;
+      color: #ffffff;
+      line-height: 1.5;
+    }
+
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #fdba74;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* NAVIGATION & PROGRESS */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #fb923c, #22d3ee);
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.2s ease-out;
+    }
+
+    #dot-nav {
+      position: fixed;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      z-index: 1000;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(251, 146, 60, 0.5);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dot.active {
+      background: #fb923c;
+      transform: scale(1.3);
+      box-shadow: 0 0 10px rgba(251, 146, 60, 0.8);
+    }
+
+    /* SCROLL-SNAP SECTIONS */
+    section {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      padding: 3rem 5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* CARD SYSTEM */
+    .card {
+      background: rgba(15, 34, 64, 0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(251, 146, 60, 0.25);
+      padding: 1.5rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      backdrop-filter: blur(8px);
+    }
+
+    .card-hero {
+      background: linear-gradient(135deg, rgba(23, 49, 89, 0.8) 0%, rgba(10, 25, 47, 0.9) 100%);
+      border: 1px solid rgba(251, 146, 60, 0.4);
+      box-shadow: 0 12px 40px rgba(251, 146, 60, 0.15);
+    }
+
+    /* GRID LAYOUTS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* BUTTONS & PILLS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #fb923c;
+      color: #07162C;
+      box-shadow: 0 4px 14px rgba(251, 146, 60, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: #f97316;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: rgba(251, 146, 60, 0.15);
+      color: #fdba74;
+      border: 1px solid rgba(251, 146, 60, 0.3);
+    }
+
+    .pill-cyan { background: rgba(34, 211, 238, 0.15); color: #22d3ee; border-color: rgba(34, 211, 238, 0.3); }
+    .pill-teal { background: rgba(52, 211, 153, 0.15); color: #34d399; border-color: rgba(52, 211, 153, 0.3); }
+    .pill-violet { background: rgba(167, 139, 250, 0.15); color: #a78bfa; border-color: rgba(167, 139, 250, 0.3); }
+
+    /* UTILITIES */
+    .text-accent { color: #fb923c; }
+    .text-cyan { color: #22d3ee; }
+    .text-teal { color: #34d399; }
+    .text-pink { color: #f472b6; }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+    
+    /* SLIDE SPECIFIC CUSTOM STYLING */
+    
+    /* Slide 1: Cover */
+    .cover-content {
+      max-width: 900px;
+    }
+    .cover-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 0%, #fdba74 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .cover-pitch {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      color: #e2e8f0;
+    }
+
+    /* Slide 3: Research Journey Map */
+    .journey-container {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-top: 1rem;
+    }
+    .journey-container::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.2), #f472b6, #fb923c, #34d399);
+      z-index: 1;
+    }
+    .journey-step {
+      position: relative;
+      z-index: 2;
+      background: #07162C;
+      padding: 0 0.5rem;
+      text-align: center;
+      width: 22%;
+    }
+    .step-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #0f2240;
+      border: 2px solid #22d3ee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.75rem auto;
+      font-weight: bold;
+    }
+    .journey-step.misery .step-icon {
+      border-color: #f472b6;
+      background: rgba(244, 114, 182, 0.2);
+      color: #f472b6;
+    }
+    .journey-step.solution .step-icon {
+      border-color: #34d399;
+      background: rgba(52, 211, 153, 0.2);
+      color: #34d399;
+    }
+
+    /* Slide 4: Blueprint MoSCoW */
+    .moscow-col {
+      background: rgba(15, 34, 64, 0.4);
+      border-radius: 8px;
+      padding: 1rem;
+      border-top: 3px solid #60a5fa;
+    }
+    .moscow-col.must { border-top-color: #fb923c; }
+    .moscow-col.should { border-top-color: #22d3ee; }
+    .moscow-col.could { border-top-color: #a78bfa; }
+    .moscow-col.wont { border-top-color: #f472b6; }
+
+    /* Slide 6: Launch Callout */
+    .bad-signal-box {
+      border-left: 4px solid #f472b6;
+      background: rgba(244, 114, 182, 0.1);
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Slide Footer Branding */
+    .slide-footer {
+      position: absolute;
+      bottom: 1rem;
+      left: 5rem;
+      right: 5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Dot Navigation -->
+  <div id="dot-nav">
+    <div class="dot active" onclick="scrollToSlide(0)" title="Cover"></div>
+    <div class="dot" onclick="scrollToSlide(1)" title="Strategy"></div>
+    <div class="dot" onclick="scrollToSlide(2)" title="Research"></div>
+    <div class="dot" onclick="scrollToSlide(3)" title="Blueprint"></div>
+    <div class="dot" onclick="scrollToSlide(4)" title="Validation"></div>
+    <div class="dot" onclick="scrollToSlide(5)" title="Launch"></div>
+    <div class="dot" onclick="scrollToSlide(6)" title="Story"></div>
+    <div class="dot" onclick="scrollToSlide(7)" title="Submit"></div>
+  </div>
+
+  <!-- SLIDE 1: COVER -->
+  <section id="slide-1">
+    <div class="cover-content">
+      <span class="eyebrow">Product Management Certification · Final Project</span>
+      <h1 class="cover-title">RouteLogic Velocity, A Frontline-First Dispatch View</h1>
+      <p class="cover-pitch">Strip the admin clutter into one real-time dispatch view so fleet coordinators reroute in seconds, not screens.</p>
+      
+      <div style="margin-bottom: 2.5rem;" class="mono">
+        <p style="color: #22d3ee; font-weight: 500;">Your Name · Product Management Cohort · Jun 2026</p>
+      </div>
+
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <a href="https://www.figma.com/your-velocity-prototype" target="_blank" rel="noopener" class="btn btn-primary">
+          <span>View Interactive Prototype</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+        <a href="https://github.com/your-handle/pm-final-project" target="_blank" rel="noopener" class="btn btn-secondary mono">
+          <span>github.com/your-handle/pm-final-project</span>
+        </a>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>ROUTELOGIC VELOCITY</span>
+      <span>01 / 08</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: STRATEGY (Slide 5) -->
+  <section id="slide-2">
+    <span class="eyebrow">Slide 5 · Strategy & Product Vision</span>
+    <h2 style="font-size: 2.2rem; margin-bottom: 1.5rem;">The Strategy</h2>
+
+    <div class="grid-2" style="margin-bottom: 1.5rem;">
+      <div class="card">
+        <span class="eyebrow text-pink">The Problem Hook</span>
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem;">Admin Clutter Forces Workarounds</h3>
+        <p>Real-time fleet coordinators abandon RouteLogic mid-shift because live dispatch is buried under admin panels built for HQ. They fall back to spreadsheets and phone calls;</p>
+        <p style="margin-top: 0.5rem; font-weight: bold; color: #f472b6;">the largest enterprise account is trialling a leaner competitor that calls RouteLogic "an administrative burden".</p>
+      </div>
+
+      <div class="card">
+        <span class="eyebrow text-cyan">The Value Proposition</span>
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem;">Frontline-First Dispatch</h3>
+        <p>Velocity gives coordinators one focused, real-time view, live vehicle status, exceptions, and one-tap reroute,</p>
+        <p style="margin-top: 0.5rem; color: #22d3ee;">so the tool becomes the fastest way to run the shift instead of the slowest.</p>
+      </div>
+    </div>
+
+    <div class="card card-hero">
+      <span class="eyebrow text-accent">Data-Backed Hypothesis</span>
+      <p style="font-size: 1.2rem; font-weight: 700; line-height: 1.4;">
+        "We believe a streamlined real-time dispatch view for fleet coordinators will increase daily active use during shifts, measured by a <span class="text-accent">+15pt lift in coordinator DAU within 30 days</span>, without reducing HQ admin feature usage."
+      </p>
+    </div>
+
+    <div class="slide-footer">
+      <span>ROUTELOGIC VELOCITY</span>
+      <span>02 / 08</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: RESEARCH (Slide 6) -->
+  <section id="slide-3">
+    <span class="eyebrow">Slide 6 · Market Research & User Journey</span>
+    <h2 style="font-size: 2.2rem; margin-bottom: 1.5rem;">Research & Workarounds</h2>
+
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <span class="eyebrow text-violet">Competitive Analysis & Workarounds</span>
+      <p style="margin-bottom: 0.5rem;">Coordinators cope by running the shift in spreadsheets and group texts, opening RouteLogic only to reconcile afterwards.</p>
+      <p style="color: #a78bfa;">Leaner competitors win with a mobile-first dispatch board; RouteLogic wins on depth but loses on speed at the moment of dispatch.</p>
+    </div>
+
+    <div class="card" style="padding-bottom: 2rem;">
+      <span class="eyebrow text-accent">User Journey Map · Mapping the Hesitation Point</span>
+      
+      <div class="journey-container">
+        <div class="journey-step">
+          <div class="step-icon">1</div>
+          <h4 style="font-size: 0.9rem;">Shift Starts</h4>
+          <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">Open console</p>
+        </div>
+
+        <div class="journey-step">
+          <div class="step-icon">2</div>
+          <h4 style="font-size: 0.9rem;">Hunt Status</h4>
+          <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">Admin-heavy tabs</p>
+        </div>
+
+        <div class="journey-step misery">
+          <div class="step-icon">!</div>
+          <h4 style="font-size: 0.9rem; color: #f472b6;">Give Up</h4>
+          <p style="font-size: 0.8rem; color: #f472b6; font-weight: bold;">Moment of Misery</p>
+        </div>
+
+        <div class="journey-step solution">
+          <div class="step-icon">✓</div>
+          <h4 style="font-size: 0.9rem; color: #34d399;">Velocity View</h4>
+          <p style="font-size: 0.8rem; color: #34d399;">Live dispatch board</p>
+        </div>
+      </div>
+      <p style="text-align: center; font-size: 0.85rem; margin-top: 1rem; color: rgba(255,255,255,0.8);" class="mono">
+        Velocity surfaces a live dispatch board on open, before the coordinator reaches for the workaround.
+      </p>
+    </div>
+
+    <div class="slide-footer">
+      <span>ROUTELOGIC VELOCITY</span>
+      <span>03 / 08</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: BLUEPRINT (Slide 7) -->
+  <section id="slide-4">
+    <span class="eyebrow">Slide 7 · Roadmap & PRD Blueprint</span>
+    <h2 style="font-size: 2.2rem; margin-bottom: 1rem;">Blueprint & Execution</h2>
+
+    <div class="grid-2" style="margin-bottom: 1rem;">
+      <!-- MoSCoW Column Container -->
+      <div class="card">
+        <span class="eyebrow text-cyan">MoSCoW Prioritisation</span>
+        <div class="grid-2" style="gap: 0.5rem; margin-top: 0.5rem; font-size: 0.85rem;">
+          <div class="moscow-col must">
+            <strong class="text-accent">MUST</strong>
+            <p>Real-time dispatch board + one-tap reroute.</p>
+          </div>
+          <div class="moscow-col should">
+            <strong class="text-cyan">SHOULD</strong>
+            <p>Exception alerts and driver ETA.</p>
+          </div>
+          <div class="moscow-col could">
+            <strong class="text-violet">COULD</strong>
+            <p>Shift-handoff summary.</p>
+          </div>
+          <div class="moscow-col wont">
+            <strong class="text-pink">WON'T (NOW)</strong>
+            <p>Rebuild of the HQ admin suite.</p>
+          </div>
+        </div>
+        <p class="mono" style="font-size: 0.8rem; margin-top: 0.75rem; color: #34d399;">Now/Next/Later ships a V1 board in 6 weeks, additive to the existing console.</p>
+      </div>
+
+      <!-- PRD Highlights -->
+      <div class="card">
+        <span class="eyebrow text-accent">PRD Highlights</span>
+        <ul style="padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
+          <li><strong>Dedicated View:</strong> Live vehicle map, exception queue, and one-tap reroute.</li>
+          <li><strong>Fleet Defaulting:</strong> Automatically defaults to the coordinator’s assigned fleet upon login.</li>
+          <li><strong>Additive Architecture:</strong> No changes to existing admin/finance modules in V1.</li>
+          <li><strong>Preserves Depth:</strong> Preserves enterprise depth while accelerating real-time frontline tasks.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card card-hero" style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem;">
+      <div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Interactive Prototype Available</h3>
+        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">Figma design prototype demonstrating the real-time dispatch board and one-tap reroute.</p>
+      </div>
+      <a href="https://www.figma.com/your-velocity-prototype" target="_blank" rel="noopener" class="btn btn-primary">
+        View Prototype
+      </a>
+    </div>
+
+    <div class="slide-footer">
+      <span>ROUTELOGIC VELOCITY</span>
+      <span>04 / 08</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: VALIDATION (Slide 8) -->
+  <section id="slide-5">
+    <span class="eyebrow">Slide 8 · Experiment Plan & Validation</span>
+    <h2 style="font-size: 2.2rem; margin-bottom: 1.5rem;">Experiment Plan</h2>
+
+    <div class="card card-hero" style="margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <span class="pill pill-cyan">A/B Test Framework</span>
+        <span class="mono" style="font-size: 0.85rem; color: #22d3ee;">Matched Depots · 50/50 Split · 30 Days Duration</span>
+      </div>
+
+      <div class="grid-2" style="gap: 1.5rem; margin-bottom: 1rem;">
+        <div>
+          <span class="eyebrow text-accent">Control Depots (50%)</span>
+          <p style="font-size: 0.95rem;">Standard RouteLogic console requiring navigation through traditional admin panels to access live dispatch data.</p>
+        </div>
+        <div>
+          <span class="eyebrow text-teal">Variant Depots (50%)</span>
+          <p style="font-size: 0.95rem;">Velocity real-time dispatch view enabled as the primary operational surface for shift coordinators.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom: 1rem;">
+      <div class="card">
+        <span class="eyebrow text-teal">Primary Metric</span>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Coordinator Shift DAU</h3>
+        <p class="mono" style="font-size: 0.85rem; color: #34d399;">Baseline: 41%</p>
+        <p class="mono" style="font-size: 0.85rem; color: #34d399;">MDE: +15pt Lift</p>
+      </div>
+
+      <div class="card">
+        <span class="eyebrow text-pink">Guardrail Metric</span>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">HQ Admin Usage</h3>
+        <p class="mono" style="font-size: 0.85rem; color: #f472b6;">Threshold: Must not drop more than 3pt</p>
+      </div>
+
+      <div class="card">
+        <span class="eyebrow text-violet">Decision Rules</span>
+        <ul style="font-size: 0.8rem; line-height: 1.4; padding-left: 1rem;">
+          <li><strong class="text-teal">SHIP:</strong> Primary hits +15pt lift & Guardrail safe.</li>
+          <li><strong class="text-accent">ITERATE:</strong> Primary flat, Guardrail safe.</li>
+          <li><strong class="text-pink">KILL:</strong> HQ admin feature usage regresses &gt;3pt.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>ROUTELOGIC VELOCITY</span>
+      <span>05 / 08</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: LAUNCH (Slide 9) -->
+  <section id="slide-6">
+    <span class="eyebrow">Slide 9 · Go-To-Market & Success Metrics</span>
+    <h2 style="font-size: 2.2rem; margin-bottom: 1.25rem;">Launch Strategy & Metrics</h2>
+
+    <div class="card" style="margin-bottom: 1.25rem;">
+      <span class="eyebrow text-accent">GTM Strategy Overview</span>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+        <span class="pill">Goal: Adoption</span>
+        <span class="pill pill-cyan">Audience: Enterprise Coordinators (At-Risk First)</span>
+        <span class="pill pill-violet">Tier: L (Large, Revenue Protection)</span>
+      </div>
+      
+      <div class="grid-2" style="font-size: 0.9rem;">
+        <div>
+          <strong style="color: #60a5fa; display: block; margin-bottom: 0.25rem;">Distribution Channels:</strong>
+          <p>CSM-led rollout (owned), in-app announcement banner (owned), and a depot-manager enablement kit.</p>
+        </div>
+        <div>
+          <strong style="color: #34d399; display: block; margin-bottom: 0.25rem;">Enablement Assets:</strong>
+          <p>A 10-minute onboarding guide + standardized customer support response macro.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="eyebrow text-cyan">Success Dashboard</span>
+        <div class="mono" style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.25rem;">
+            <span>Coordinator DAU During Shifts:</span>
+            <span class="text-teal">Target +15pt Lift</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.25rem;">
+            <span>In-App Reroutes Completed:</span>
+            <span class="text-accent">Track shift execution volume</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Time-to-First-Action on Open:</span>
+            <span class="text-cyan">Target friction reduction</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bad-signal-box">
+        <span class="eyebrow text-pink">Bad Signal Callout</span>
+        <h4 style="font-size: 1rem; color: #f472b6; margin-bottom: 0.25rem;">Opening Without Execution Trust</h4>
+        <p style="font-size: 0.85rem;">If coordinators open Velocity but still finish the shift in spreadsheets, that means the board is not yet fast enough to trust.</p>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>ROUTELOGIC VELOCITY</span>
+      <span>06 / 08</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: STORY (Slide 10) -->
+  <section id="slide-7">
+    <span class="eyebrow">Slide 10 · Product Narrative & Key Retrospective</span>
+    <h2 style="font-size: 2.2rem; margin-bottom: 1.5rem;">The Product Story</h2>
+
+    <div class="grid-2" style="margin-bottom: 1.5rem;">
+      <div class="card">
+        <span class="eyebrow text-pink">Friction Points & Aha Moment</span>
+        <p style="margin-bottom: 0.75rem; font-size: 0.95rem; color: #22d3ee; font-weight: bold;">The aha moment was realising the fix was subtraction, not features.</p>
+        <p style="font-size: 0.95rem; margin-bottom: 0.75rem;">Coordinators did not need more power, they needed the live view unburied.</p>
+        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">The hardest part was protecting enterprise depth while making the frontline the default.</p>
+      </div>
+
+      <div class="card">
+        <span class="eyebrow text-teal">Key Takeaways & What's Next</span>
+        <div style="margin-bottom: 1rem;">
+          <strong style="color: #34d399; display: block; font-size: 0.9rem;">Biggest Takeaway:</strong>
+          <p style="font-size: 0.95rem;">For B2B tools, the workflow at the moment of decision beats feature breadth.</p>
+        </div>
+        <div>
+          <strong style="color: #fb923c; display: block; font-size: 0.9rem;">Next Steps:</strong>
+          <p style="font-size: 0.95rem;">Instrument the reroute flow and A/B test exception-alert timing to cut time-to-action further.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>ROUTELOGIC VELOCITY</span>
+      <span>07 / 08</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: THANK YOU / SUBMIT -->
+  <section id="slide-8" style="text-align: center; align-items: center;">
+    <div style="max-width: 700px; margin: 0 auto;">
+      <span class="eyebrow" style="margin-bottom: 1rem;">Project Complete</span>
+      <h2 style="font-size: 3rem; margin-bottom: 1.5rem; color: #ffffff;">Thank You</h2>
+      
+      <p style="font-size: 1.2rem; margin-bottom: 2rem; color: rgba(255,255,255,0.8);">
+        RouteLogic Velocity is ready for executive review and development handover.
+      </p>
+
+      <div style="margin-bottom: 2.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <span class="pill pill-violet" style="font-size: 0.9rem; padding: 0.5rem 1rem;">Cohort: Jun 2026</span>
+        <span class="pill pill-teal" style="font-size: 0.9rem; padding: 0.5rem 1rem;">File: 06-launch/final-presentation.html</span>
+      </div>
+
+      <div class="card card-hero" style="padding: 2rem; display: inline-block; width: 100%;">
+        <span class="eyebrow text-accent" style="margin-bottom: 0.75rem;">Final Deliverable Action</span>
+        <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">Submit to the Learning Platform</h3>
+        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;" class="mono">
+          https://github.com/your-handle/pm-final-project
+        </p>
+        <a href="https://github.com/your-handle/pm-final-project" target="_blank" rel="noopener" class="btn btn-primary" style="width: 100%; max-width: 300px;">
+          View Repository
+        </a>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>ROUTELOGIC VELOCITY</span>
+      <span>08 / 08</span>
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT: KEYBOARD NAV & PROGRESS BAR -->
+  <script>
+    const slides = document.querySelectorAll('section');
+    const dots = document.querySelectorAll('.dot');
+    const progressBar = document.getElementById('progress-bar');
+    let currentSlide = 0;
+
+    function updateProgress() {
+      const scrollPosition = window.scrollY;
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalHeight > 0 ? (scrollPosition / totalHeight) * 100 : 0;
+      progressBar.style.width = progress + '%';
+
+      // Update active slide index based on viewport position
+      slides.forEach((slide, index) => {
+        const rect = slide.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+          currentSlide = index;
+          dots.forEach(d => d.classList.remove('active'));
+          if (dots[index]) dots[index].classList.add('active');
+        }
+      });
+    }
+
+    function scrollToSlide(index) {
+      if (index >= 0 && index < slides.length) {
+        slides[index].scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Keyboard Navigation
+    window.addEventListener('keydown', (e) => {
+      switch(e.key) {
+        case 'ArrowDown':
+        case 'Space':
+          e.preventDefault();
+          scrollToSlide(currentSlide + 1);
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          scrollToSlide(currentSlide - 1);
+          break;
+        case 'Home':
+          e.preventDefault();
+          scrollToSlide(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          scrollToSlide(slides.length - 1);
+          break;
+        case 'Escape':
+          e.preventDefault();
+          scrollToSlide(0);
+          break;
+      }
+    });
+
+    window.addEventListener('scroll', updateProgress);
+    window.addEventListener('resize', updateProgress);
+    updateProgress();
+  </script>
+</body>
+</html>
